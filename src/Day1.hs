@@ -1,11 +1,26 @@
-module Day1 where
+module Day1 (main) where
 
 import System.IO 
+import AOCFuncs
+import Data.List
+import Data.List.Utils
 
 main = do  
-    contents <- readFile "test.txt"
-    let input_nums = map readInt . words $ contents
-    print input_nums
+    contents <- readFile "data/day1.txt"
+    let lines_ = concat $ splitElfs $ lines contents
+        lines_str = map (wordsWhen (== ',')) (wordsWhen (==';') lines_)
+        lines_int = map (map readInt) lines_str
 
-readInt :: String -> Int
-readInt = read
+        elf_loads = sort $ map sum lines_int
+
+    print $ "largest load: " ++ show (last elf_loads)
+
+    print $ "top 3 loads: " ++ show (take 3 (DL.reverse elf_loads))
+
+    print $ "sum of top 3 loads: " ++ show (sum (take 3 (DL.reverse elf_loads)))
+
+
+splitElfs :: [String] -> [String]
+splitElfs [] = []
+splitElfs (x : "" : xs) = x : ";" : splitElfs xs
+splitElfs (x:xs) = (x ++ ",") : splitElfs xs
