@@ -1,6 +1,7 @@
 .stack-work/
 .vscode/
 .dist-newstyle/
+.dist-newstyle/cache/
 *~
 
 test-funcs.*
@@ -8,3 +9,4 @@ test-input.*
 testing.*
 
 test.txt
+dist-newstyle/cache/config
