@@ -3,13 +3,13 @@ module Day2b (main) where
 import System.IO 
 import AOCFuncs
 
-data RPS = Rock | Paper | Scissors deriving (Eq, Show, Enum)
-instance Ord RPS where
-    compare Rock Paper = LT
-    compare Paper Scissors = LT
-    compare Scissors Rock = LT
+data RPS = Rock | Paper | Scissors deriving (Eq, Show, Enum, Ord)
+compareRPS :: RPS -> RPS -> Ordering
+compareRPS Rock Scissors = GT
+compareRPS Scissors Rock = LT
+compareRPS a b = a `compare` b
 
-type RPSRound = ((RPS, Int),(RPS, Int))
+type RPSRound = (RPS, RPS)
 
 succ' :: RPS -> RPS
 succ' Scissors = Rock
@@ -20,7 +20,7 @@ pred' Rock = Scissors
 pred' rps_ = pred rps_
 
 responseAction :: RPS -> String -> RPSRound
-responseAction action result = ((action, getRPSVal action), (result_action, getRPSVal result_action))
+responseAction action result = (action, result_action)
     where result_action
             | result == "X" = pred' action
             | result == "Y" = action
@@ -35,18 +35,12 @@ getRPS "A" = Rock
 getRPS "B" = Paper
 getRPS "C" = Scissors
 
-getRPSVal :: RPS -> Int
-getRPSVal action
-    | action == Rock = 1
-    | action == Paper = 2
-    | action == Scissors = 3
-
 getRoundScore :: RPSRound -> Int
-getRoundScore ((action1, _),(action2, action_score)) = win_score action1 action2 + action_score where 
+getRoundScore (action1, action2) = win_score action1 action2 + fromEnum action2 + 1 where 
     win_score a1 a2 
         | a1 == a2 = 3 
-        | a1 > a2 = 0
-        | a1 < a2 = 6
+        | a1 `compareRPS` a2 == GT = 0
+        | a1 `compareRPS` a2 == LT = 6
 
 main = do  
     contents <- readFile "data/day2.txt"
