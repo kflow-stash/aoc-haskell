@@ -2,8 +2,6 @@ module Day2a (main) where
 
 import System.IO 
 import AOCFuncs
-import qualified Data.List as DL
-import Data.List.Split
 
 data RPS = Rock | Paper | Scissors deriving (Eq, Show, Enum)
 instance Ord RPS where
