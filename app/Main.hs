@@ -3,6 +3,8 @@
 import qualified Day1
 import qualified Day2
 import qualified Day3
+import qualified Day4
+import qualified Day5
 
 
 import System.Environment (getArgs)
@@ -12,7 +14,9 @@ import Data.Maybe (fromJust)
 dispatch = [
     ("Day1", Day1.main),
     ("Day2", Day2.main),
-    ("Day3", Day3.main)]
+    ("Day3", Day3.main),
+    ("Day4", Day4.main),
+    ("Day5", Day5.main)]
 
 main = do
     --args <- getArgs
