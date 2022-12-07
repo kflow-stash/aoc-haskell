@@ -19,15 +19,12 @@ getDirMap (x_pre:x:xs) = getDirElem x_pre x : getDirMap ([dir_path]:xs)
         dir_path = case x_pre of    [] -> head x 
                                     _ -> head x_pre ++ "\\" ++ head x
         
-
 getDirElem :: [String] -> [String] -> (String, DirContents)
 getDirElem x_pre x = (dir_path, DirContents (getFileSizes x) (getSubDirs dir_path x))
-    where dir_path = case x_pre of  [] -> head x 
-                                    _ -> head x_pre ++ "\\" ++ head x
+    where   dir_path = case x_pre of    [] -> head x 
+                                        _ -> head x_pre ++ "\\" ++ head x
+            getSubDirs prefix_ x = map (((prefix_ ++ "\\") ++) . last . words) (filter (\x -> "dir " `isPrefixOf` x) x)
 
-getSubDirs :: String -> [String] -> [String]
-getSubDirs prefix_ x = map (((prefix_ ++ "\\") ++) . last . words) (filter (\x -> "dir " `isPrefixOf` x) x)
-    
 getTotalSize :: (String,DirContents) -> Map.Map String Int -> Map.Map String Int
 getTotalSize (dir_name, dir_contents) totals = Map.insert dir_name new_entry totals
     where new_entry = fileSize dir_contents + foldl (\acc x -> acc + fromMaybe 0 (Map.lookup x totals)) 0 (subdirs dir_contents) 
