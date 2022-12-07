@@ -12,7 +12,7 @@ import Data.Function
 data DirContents = DirContents {fileSize :: Int, subdirs :: [String]} deriving (Show, Eq)
 
 getDirMap :: [[String]] -> [(String, DirContents)]
-getDirMap [_] = [("",DirContents 0 [])]
+getDirMap [_] = []
 getDirMap (x_pre:[".."]:xs) = getDirMap ([moveup_path]:xs) where moveup_path = intercalate "\\" (init (wordsWhen (=='\\') (head x_pre)))
 getDirMap (x_pre:x:xs) = getDirElem x_pre x : getDirMap ([dir_path]:xs)
     where 
@@ -39,7 +39,7 @@ getFileSizes x = sum $ map getFileSize (tail x)
 main = do  
     contents <- readFile "data/day7.txt"
     let input_ = map lines (splitOn "$ cd " contents)
-        directory_map =  filter (/=("", DirContents 0 [])) (getDirMap input_)
+        directory_map =  getDirMap input_
         sorted_directs = sortBy (flip compare `on` length . splitOn "\\" . fst) directory_map
         total_sizes = Map.toList (foldl (flip getTotalSize) Map.empty sorted_directs )
 
