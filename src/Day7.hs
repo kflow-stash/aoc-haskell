@@ -3,7 +3,6 @@ module Day7 (main) where
 import System.IO 
 import AOCFuncs
 import Data.List
-import qualified Data.Set as Set
 import Data.List.Split
 import Data.Maybe
 import qualified Data.Map as Map
@@ -14,16 +13,13 @@ data DirContents = DirContents {fileSize :: Int, subdirs :: [String]} deriving (
 getDirMap :: [[String]] -> [(String, DirContents)]
 getDirMap [_] = []
 getDirMap (x_pre:[".."]:xs) = getDirMap ([moveup_path]:xs) where moveup_path = intercalate "\\" (init (wordsWhen (=='\\') (head x_pre)))
-getDirMap (x_pre:x:xs) = getDirElem x_pre x : getDirMap ([dir_path]:xs)
-    where 
-        dir_path = case x_pre of    [] -> head x 
+getDirMap (x_pre:x:xs) = getDirElem dir_path x_pre x : getDirMap ([dir_path]:xs)
+    where dir_path = case x_pre of  [] -> head x 
                                     _ -> head x_pre ++ "\\" ++ head x
         
-getDirElem :: [String] -> [String] -> (String, DirContents)
-getDirElem x_pre x = (dir_path, DirContents (getFileSizes x) (getSubDirs dir_path x))
-    where   dir_path = case x_pre of    [] -> head x 
-                                        _ -> head x_pre ++ "\\" ++ head x
-            getSubDirs prefix_ x = map (((prefix_ ++ "\\") ++) . last . words) (filter (\x -> "dir " `isPrefixOf` x) x)
+getDirElem :: String -> [String] -> [String] -> (String, DirContents)
+getDirElem dir_path x_pre x = (dir_path, DirContents (getFileSizes x) (getSubDirs dir_path x))
+    where getSubDirs prefix_ x = map (((prefix_ ++ "\\") ++) . last . words) (filter (\x -> "dir " `isPrefixOf` x) x)
 
 getTotalSize :: (String,DirContents) -> Map.Map String Int -> Map.Map String Int
 getTotalSize (dir_name, dir_contents) totals = Map.insert dir_name new_entry totals
