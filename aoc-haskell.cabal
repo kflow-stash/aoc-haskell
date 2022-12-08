@@ -33,6 +33,7 @@ library
       Day5
       Day6
       Day7
+      Day8
   other-modules:
       Paths_aoc_haskell
   hs-source-dirs:

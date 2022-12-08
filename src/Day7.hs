@@ -22,8 +22,8 @@ getDirElem dir_path x_pre x = (dir_path, DirContents (getFileSizes x) (getSubDir
     where getSubDirs prefix_ x = map (((prefix_ ++ "\\") ++) . last . words) (filter (\x -> "dir " `isPrefixOf` x) x)
 
 getTotalSize :: (String,DirContents) -> Map.Map String Int -> Map.Map String Int
-getTotalSize (dir_name, dir_contents) totals = Map.insert dir_name new_entry totals
-    where new_entry = fileSize dir_contents + foldl (\acc x -> acc + fromMaybe 0 (Map.lookup x totals)) 0 (subdirs dir_contents) 
+getTotalSize (dir_name, dir_contents) totals = Map.insert dir_name dir_size totals
+    where dir_size = fileSize dir_contents + foldl (\acc x -> acc + fromMaybe 0 (Map.lookup x totals)) 0 (subdirs dir_contents) 
 
 getFileSizes :: [String] -> Int
 getFileSizes x = sum $ map getFileSize (tail x)
@@ -34,8 +34,7 @@ getFileSizes x = sum $ map getFileSize (tail x)
 
 main = do  
     contents <- readFile "data/day7.txt"
-    let input_ = map lines (splitOn "$ cd " contents)
-        directory_map =  getDirMap input_
+    let directory_map =  getDirMap $ map lines (splitOn "$ cd " contents)
         sorted_directs = sortBy (flip compare `on` length . splitOn "\\" . fst) directory_map
         total_sizes = Map.toList (foldl (flip getTotalSize) Map.empty sorted_directs )
 
