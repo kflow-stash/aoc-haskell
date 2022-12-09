@@ -3,6 +3,7 @@ module Day8 (main) where
 import System.IO 
 import AOCFuncs
 import Data.List
+import Data.Char
 
 visibleRow _ [] = []
 visibleRow left_max (x:xs) = ((x > left_max) || all (<x) xs) : visibleRow new_max xs
@@ -19,7 +20,7 @@ scenicScoreRow xs = reverse $ foldl (\acc x -> scenicScoreR x:acc) [] sights
 
 main = do  
     contents <- readFile "data/day8.txt"
-    let input_ =  map (map (readInt . take 1) . init . tails) (lines contents)
+    let input_ =  map (map digitToInt) $ lines contents
 
         row_v = map (visibleRow (-1)) input_
         col_v = transpose $ map (visibleRow (-1)) $ transpose input_

@@ -7,9 +7,13 @@ import qualified Day4
 import qualified Day5
 import qualified Day6
 import qualified Day7
+import qualified Day8
+import qualified Day9
 
 import System.Environment (getArgs)
 import Data.Maybe (fromJust)
+
+import qualified AOCFuncs
 
 
 dispatch = [
