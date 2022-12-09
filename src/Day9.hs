@@ -7,8 +7,7 @@ import Data.List (tails,nub)
 moveHead :: [[Int]] -> [Int] -> [[Int]]
 moveHead [h0@[hy0,hx0], t0@[ty0,tx0]] [dy,dx] 
     | isAdjacent [hy1, hx1] t0 = [[hy1,hx1], t0]
-    | (abs dy1 > 1) || (abs dx1 > 1) = [[hy1,hx1], [ty0 + signum dy1,tx0 + signum dx1]]
-    | otherwise = [[hy1,hx1], h0]
+    | otherwise = [[hy1,hx1], [ty0 + signum dy1,tx0 + signum dx1]]
         where   hy1 = hy0 + dy
                 hx1 = hx0 + dx
                 dy1 = hy1 - ty0
