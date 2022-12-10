@@ -1,4 +1,4 @@
-module Day9 (main) where
+module Day10 (main) where
 
 import System.IO 
 import AOCFuncs
@@ -42,17 +42,9 @@ applyMoves p0 moves = foldl (\acc x -> moveHead (head acc) x : acc) p0 vectors
 
 
 main = do  
-    contents <- readFile "data/day9.txt"
+    contents <- readFile "data/day10.txt"
     let input_ = map words $ lines contents
-        head_vectors = concatMap parseIn input_
-
-        initial_locs = [[[0,0],[0,0]]] 
-        ht_moves = foldl (\acc x -> moveHead (head acc) x : acc) initial_locs head_vectors
-        n_t1_touches = length $ nub $ reverse $ map last ht_moves      
-
-        ht9_moves = foldl (\acc x -> applyMoves initial_locs acc) ht_moves [2..9]
-        n_t9_touches = length $ nub $ reverse $ map last ht9_moves 
 
 
-    print $ "part1: " ++ show n_t1_touches
-    print $ "part2: " ++ show n_t9_touches
+
+    print input_

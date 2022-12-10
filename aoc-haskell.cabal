@@ -38,7 +38,7 @@ library
   other-modules:
       Paths_aoc_haskell
   hs-source-dirs:
-      src 
+      src
   ghc-options: -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints
   build-depends:
       base >=4.7 && <5
