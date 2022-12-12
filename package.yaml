@@ -23,6 +23,10 @@ dependencies:
 - base >= 4.7 && < 5
 - containers
 - split
+- heap
+- unordered-containers
+- hashable
+- mtl
 
 ghc-options:
 - -Wcompat

@@ -27,6 +27,10 @@ library
   exposed-modules:
       AOCFuncs
       Day1
+      Day10
+      Day11
+      Day11_2
+      Day12
       Day2
       Day3
       Day4
@@ -35,6 +39,7 @@ library
       Day7
       Day8
       Day9
+      Test_
   other-modules:
       Paths_aoc_haskell
   hs-source-dirs:
@@ -43,7 +48,11 @@ library
   build-depends:
       base >=4.7 && <5
     , containers
+    , hashable
+    , heap
+    , mtl
     , split
+    , unordered-containers
   default-language: Haskell2010
 
 executable aoc-haskell-exe
@@ -57,5 +66,9 @@ executable aoc-haskell-exe
       aoc-haskell
     , base >=4.7 && <5
     , containers
+    , hashable
+    , heap
+    , mtl
     , split
+    , unordered-containers
   default-language: Haskell2010
