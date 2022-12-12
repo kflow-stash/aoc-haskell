@@ -33,7 +33,7 @@ addDist _ _ = Infinity
 newtype Graph = Graph
   {edges :: HashMap (Int, Int) [(String, Int)]}
 
-data DijkstraState = DijkstraState
+data DijkState = DijkState
   { visitedSet :: HashSet (Int, Int),
     distanceMap :: HashMap (Int, Int) (Distance Int,(Int,Int)),
     nodeQueue :: MinPrioHeap (Distance Int) (Int, Int),
@@ -45,8 +45,8 @@ data DijkstraState = DijkstraState
 
 neighboring = [(0, 1), (1, 0), (0, -1), (-1, 0)]
 
-getNeighbors :: (Int, Int) -> DijkstraState -> [((Int, Int), Int)]
-getNeighbors src_ ds@(DijkstraState _ _ _ grid_ (lowB, highB, leftB, rightB) _ _) = map (\node -> (node, HM.findWithDefault 0 node grid_)) inNeighbors
+getNeighbors :: (Int, Int) -> DijkState -> [((Int, Int), Int)]
+getNeighbors src_ ds@(DijkState _ _ _ grid_ (lowB, highB, leftB, rightB) _ _) = map (\node -> (node, HM.findWithDefault 0 node grid_)) inNeighbors
   where
     inBounds (y, x)
       | y < lowB = False
@@ -56,8 +56,8 @@ getNeighbors src_ ds@(DijkstraState _ _ _ grid_ (lowB, highB, leftB, rightB) _ _
       | otherwise = True
     inNeighbors = filter inBounds $ map (\(dy, dx) -> (dy + fst src_, dx + snd src_)) neighboring
 
-processQueue :: DijkstraState -> HashMap (Int, Int) (Distance Int,(Int,Int))
-processQueue ds@(DijkstraState v0 d0 q0 grid_ bnd src dest) = case H.view q0 of
+processQueue :: DijkState -> HashMap (Int, Int) (Distance Int,(Int,Int))
+processQueue ds@(DijkState v0 d0 q0 grid_ bnd src dest) = case H.view q0 of
   Nothing -> d0
   Just ((minDist, node), q1)
     | node == dest -> d0
@@ -69,25 +69,25 @@ processQueue ds@(DijkstraState v0 d0 q0 grid_ bnd src dest) = case H.view q0 of
               filter (\(n, _) -> not (HS.member n v1)) allNeighbors
          in processQueue $
               foldl
-                (foldNeighbor node)
-                (DijkstraState v1 d0 q1 grid_ bnd src dest)
+                (processNeighbor node)
+                (DijkState v1 d0 q1 grid_ bnd src dest)
                 unvisitedNeighbors
 
-foldNeighbor :: (Int, Int) -> DijkstraState -> ((Int, Int), Int) -> DijkstraState
-foldNeighbor current_node ds@(DijkstraState v1 d0 q1 grid_ x2 x3 x4) (neighborNode, cost) =
+processNeighbor :: (Int, Int) -> DijkState -> ((Int, Int), Int) -> DijkState
+processNeighbor current_node ds@(DijkState v1 d0 q1 grid_ x2 x3 x4) (neighborNode, cost) =
   let current_height = HM.findWithDefault 0 current_node grid_
-      altDistance = addDist (d0 !?? current_node) (Dist 1)--addDist (d0 !?? current_node) (Dist cost)
+      altDistance = addDist (d0 !?? current_node) (Dist 1)
    in if (altDistance < d0 !?? neighborNode) && (cost <= (current_height + 1)) -- added condition here to limit step to 1
-        then DijkstraState v1 (HM.insert neighborNode (altDistance,current_node) d0) (H.insert (altDistance, neighborNode) q1) grid_ x2 x3 x4
+        then DijkState v1 (HM.insert neighborNode (altDistance,current_node) d0) (H.insert (altDistance, neighborNode) q1) grid_ x2 x3 x4
         else ds
 
 findShortestDistance :: HashMap (Int, Int) Int -> (Int, Int) -> (Int, Int) -> (Int, Int, Int, Int) -> HashMap (Int, Int) (Distance Int, (Int,Int))
-findShortestDistance grid src dest bnds = processQueue initialState -- processQueue initialState !?? dest
+findShortestDistance grid src dest bnds = processQueue initialState 
   where
     initialVisited = HS.empty
-    initialDistances = HM.singleton src (Dist 0,src)
+    initialHeights = HM.singleton src (Dist 0,src)
     initialQueue = H.fromList [(Dist 0, src)]
-    initialState = DijkstraState initialVisited initialDistances initialQueue grid bnds src dest
+    initialState = DijkState initialVisited initialHeights initialQueue grid bnds src dest
 
 replaceSrcDest x
   | x == -14 = 0
@@ -102,7 +102,7 @@ piecePath d0 src dest
       
 getNSteps :: HashMap (Int, Int) (Distance Int, (Int,Int)) -> (Int,Int) -> (Int,Int) -> Int
 getNSteps dijk dest src = x
-  where Dist x = fst $ fromMaybe (Dist 500, (-1,-1)) $ HM.lookup dest dijk
+  where Dist x = fst $ fromMaybe (Dist 500, (-1,-1)) $ HM.lookup dest dijk -- 500 because some srcs are in basins
 
 main = do
   contents <- readFile "data/day12.txt"
