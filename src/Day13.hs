@@ -8,17 +8,11 @@ import Data.Maybe
 import System.IO
 
 isList = (== '[')
-
 getNum = break (\x -> (x == ']') || (x == ','))
-
 dropLeading = dropWhile (\x -> (x == ']') || (x == ','))
-
 dropLeadingComma = dropWhile (== ',')
-
 isEnd x = (== ']') $ head x
-
-insertList xs = "[" ++ x1 ++ "]" ++ x2
-  where (x1,x2) = break (==',') xs
+insertList xs = "[" ++ x1 ++ "]" ++ x2 where (x1,x2) = break (==',') xs
 
 decodeElem :: [String] -> Bool
 decodeElem [[], []] = False
@@ -45,18 +39,10 @@ decodeElem [x1@(xl : xls), x2@(xr : xrs)]
       compareNums l_num r_num
 
 swapTill x [] = [x]
-swapTill x (y : xs) = min' x y : swapTill (max' x y) xs
-
-min' x1 x2
-  | x1 == x2 = x1
-  | decodeElem [x1, x2] = x1
-  | otherwise = x2
-
-max' x1 x2
-  | x1 == x2 = x1
-  | decodeElem [x1, x2] = x2
-  | otherwise = x1
-
+swapTill x (y : xs) = decodeMin : swapTill decodeMax xs
+  where minTrue = decodeElem [x, y]
+        decodeMin = if minTrue then x else y
+        decodeMax = if minTrue then y else x
 
 main = do
   contents <- readFile "data/day13.txt"
