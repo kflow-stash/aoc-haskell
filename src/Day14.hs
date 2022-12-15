@@ -13,13 +13,10 @@ interpCoords c1@[y1, x1] c2@[y2, x2]
   | otherwise = c1 : interpCoords c3 c2 
     where c3 = [signum (y2 - y1) + y1, signum (x2 - x1) + x1]
 
-windows x = map (take 2) $ tails x
-
-interp_coords pairs = DS.fromList $ concatMap (\[x,y] -> interpCoords x y) pairs
-
 getOccupied :: [[[Int]]] -> DS.HashSet [Int]
 getOccupied coords = foldl DS.union DS.empty points
   where 
+    windows x = map (take 2) $ tails x
     pairs = map (filter (\x -> length x == 2) . windows) coords
     interp_coords x = DS.fromList $ concatMap (\[x,y] -> interpCoords x y) x
     points = map interp_coords pairs
@@ -53,7 +50,7 @@ main = do
       x_coords = [x | [x,y] <- DS.toList occupied]
       minx = minimum x_coords
       maxx = maximum x_coords
-      occupied_part2 = foldl (\acc (x,y) -> DS.insert [x,y] acc) occupied (zip [(minx-401)..(maxx+401)] (repeat (max_y + 2)))
+      occupied_part2 = foldl (\acc (x,y) -> DS.insert [x,y] acc) occupied (zip [(minx-150)..(maxx+150)] (repeat (max_y + 2)))
 
       occupied_sand2 = sandFall [500,0] occupied_part2 (max_y+2)
       n_grains2 = length occupied_sand2 - length occupied_part2

@@ -27,6 +27,7 @@ dependencies:
 - unordered-containers
 - hashable
 - mtl
+- semialign
 
 ghc-options:
 - -Wcompat
