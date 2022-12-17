@@ -20,7 +20,7 @@ scannerPoints ((x,y),d) row_ = if dy < 0 then (0,0) else (x - dy, x + dy)
 getMissing [] _ = []
 getMissing (x@(x1,x2):xs) t@(total1, total2) 
   | x2 < total2 = getMissing xs t
-  | x1 > total2 + 1 = [total2 + 1] : getMissing xs (total1, x2)
+  | x1 > total2 + 1 = [(total2 + 1)..(x1-1)] ++ getMissing xs (total1, x2)
   | otherwise = getMissing xs (total1, x2)
 
 getAllMissing2 row_ distances = getMissing rel_scans (0,0)
@@ -47,7 +47,7 @@ main = do
       rel_beacons = DS.filter (\[x,y] -> y == row_) $ DS.fromList $ map last input2
       part1 = part1_scanned - length rel_beacons
 
-      beacon_loc = head $ foldl (\acc x -> let missing = getAllMissing2 x distances in if null missing then acc else (head $ head missing,x):acc ) [] [3000000..4000000]
+      beacon_loc = head $ foldl (\acc x -> let missing = getAllMissing2 x distances in if null missing then acc else (head missing,x):acc ) [] [3000000..4000000]
 
 
   print part1
